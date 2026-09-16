@@ -9,7 +9,12 @@ import core.basesyntax.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+
 class RegistrationServiceImplTest {
+    private static final String MIN_LOGIN_LENGTH = "1234";
+    private static final String MIN_PASSWORD_LENGTH = "4321";
+    private static final Integer MIN_AGE = 17;
+
     private RegistrationService registrationService;
 
     @BeforeEach
@@ -34,7 +39,7 @@ class RegistrationServiceImplTest {
 
     @Test
     void register_shortLogin_notOk() {
-        User user = new User("12345", "123456", 20);
+        User user = new User(MIN_LOGIN_LENGTH, "123456", 20);
         assertThrows(RegistrationException.class, () ->
                 registrationService.register(user));
     }
@@ -49,7 +54,7 @@ class RegistrationServiceImplTest {
 
     @Test
     void register_shortPassword_notOk() {
-        User user = new User("123456", "12345", 20);
+        User user = new User("123456", MIN_PASSWORD_LENGTH, 20);
         assertThrows(RegistrationException.class, () ->
                 registrationService.register(user)
         );
@@ -65,7 +70,7 @@ class RegistrationServiceImplTest {
 
     @Test
     void register_underageUser_notOk() {
-        User user = new User("123456", "123456", 17);
+        User user = new User("123456", "123456", MIN_AGE);
         assertThrows(RegistrationException.class, () ->
                 registrationService.register(user));
     }
