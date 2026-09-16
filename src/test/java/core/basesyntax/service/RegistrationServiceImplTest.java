@@ -9,11 +9,14 @@ import core.basesyntax.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-
 class RegistrationServiceImplTest {
-    private static final String MIN_LOGIN_LENGTH = "1234";
-    private static final String MIN_PASSWORD_LENGTH = "4321";
-    private static final Integer MIN_AGE = 17;
+    private static final String VALID_LOGIN = "validLogin";
+    private static final String VALID_PASSWORD = "validPassword";
+    private static final int VALID_AGE = 20;
+
+    private static final String SHORT_LOGIN = "12345";
+    private static final String SHORT_PASSWORD = "12345";
+    private static final Integer UNDERAGE = 17;
 
     private RegistrationService registrationService;
 
@@ -32,21 +35,21 @@ class RegistrationServiceImplTest {
 
     @Test
     void register_nullLogin_notOk() {
-        User user = new User(null, "123456", 20);
+        User user = new User(null, VALID_PASSWORD, VALID_AGE);
         assertThrows(RegistrationException.class, () ->
                 registrationService.register(user));
     }
 
     @Test
     void register_shortLogin_notOk() {
-        User user = new User(MIN_LOGIN_LENGTH, "123456", 20);
+        User user = new User(SHORT_LOGIN, VALID_PASSWORD, VALID_AGE);
         assertThrows(RegistrationException.class, () ->
                 registrationService.register(user));
     }
 
     @Test
     void register_nullPassword_notOk() {
-        User user = new User("123456", null, 20);
+        User user = new User(VALID_LOGIN, null, VALID_AGE);
         assertThrows(RegistrationException.class, () ->
                 registrationService.register(user)
         );
@@ -54,7 +57,7 @@ class RegistrationServiceImplTest {
 
     @Test
     void register_shortPassword_notOk() {
-        User user = new User("123456", MIN_PASSWORD_LENGTH, 20);
+        User user = new User(VALID_LOGIN, SHORT_PASSWORD, VALID_AGE);
         assertThrows(RegistrationException.class, () ->
                 registrationService.register(user)
         );
@@ -62,7 +65,7 @@ class RegistrationServiceImplTest {
 
     @Test
     void register_nullAge_notOk() {
-        User user = new User("123456", "123456", null);
+        User user = new User(VALID_LOGIN, VALID_PASSWORD, null);
         assertThrows(RegistrationException.class, () ->
                 registrationService.register(user)
         );
@@ -70,30 +73,30 @@ class RegistrationServiceImplTest {
 
     @Test
     void register_underageUser_notOk() {
-        User user = new User("123456", "123456", MIN_AGE);
+        User user = new User(VALID_LOGIN, VALID_PASSWORD, UNDERAGE);
         assertThrows(RegistrationException.class, () ->
                 registrationService.register(user));
     }
 
     @Test
     void register_duplicateLogin_notOk() {
-        User user1 = new User("Maximus", "123456", 20);
+        User user1 = new User(VALID_LOGIN, VALID_PASSWORD, VALID_AGE);
         registrationService.register(user1);
-        User user2 = new User("Maximus", "111222", 30);
+        User user2 = new User(VALID_LOGIN, "otherPassword", VALID_AGE);
         assertThrows(RegistrationException.class, () ->
                 registrationService.register(user2));
     }
 
     @Test
     void register_validUser_ok() {
-        User user = new User("Maximus", "123456", 20);
+        User user = new User(VALID_LOGIN, VALID_PASSWORD, VALID_AGE);
         User actual = registrationService.register(user);
-        assertEquals(actual, user);
+        assertEquals(user, actual);
     }
 
     @Test
     void register_loginLengthSix_ok() {
-        User user = new User("123456", "1234567", 20);
+        User user = new User("123456", VALID_PASSWORD, VALID_AGE);
         User actual = registrationService.register(user);
         assertEquals(user, actual);
 
@@ -101,7 +104,7 @@ class RegistrationServiceImplTest {
 
     @Test
     void register_passwordLengthSix_ok() {
-        User user = new User("1234567", "123456", 20);
+        User user = new User(VALID_LOGIN, "123456", VALID_AGE);
         User actual = registrationService.register(user);
         assertEquals(user, actual);
 
@@ -109,7 +112,7 @@ class RegistrationServiceImplTest {
 
     @Test
     void register_ageEighteen_ok() {
-        User user = new User("123455", "123466", 18);
+        User user = new User(VALID_LOGIN, VALID_PASSWORD, 18);
         User actual = registrationService.register(user);
         assertEquals(user, actual);
     }
